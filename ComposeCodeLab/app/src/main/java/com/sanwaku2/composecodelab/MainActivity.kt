@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,7 +43,10 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun MyApp() {
     // byキーワードで.valueを省略できる プロパティデリゲート
-    var shouldShowOnboarding by remember { mutableStateOf(true) }
+    //var shouldShowOnboarding by remember { mutableStateOf(true) }
+
+    // rememberSavableで構成変更やプロセス再生成後も状態を保持できる
+    var shouldShowOnboarding by rememberSaveable { mutableStateOf(true) }
 
     if (shouldShowOnboarding) {
         OnboardingScreen(onContinueClicked = { shouldShowOnboarding = false })
