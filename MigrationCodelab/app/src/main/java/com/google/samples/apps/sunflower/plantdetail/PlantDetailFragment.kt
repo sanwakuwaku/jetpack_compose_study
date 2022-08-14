@@ -110,7 +110,8 @@ class PlantDetailFragment : Fragment() {
 
             composeView.setContent {
                 MaterialTheme {
-                    PlantDetailDescription()
+                    // viewModelをコンポーザブルに渡す
+                    PlantDetailDescription(plantDetailViewModel)
                 }
             }
         }
