@@ -22,6 +22,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.material.MaterialTheme
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ShareCompat
 import androidx.core.widget.NestedScrollView
@@ -108,10 +109,17 @@ class PlantDetailFragment : Fragment() {
                 }
             }
 
-            composeView.setContent {
-                MaterialTheme {
-                    // viewModelをコンポーザブルに渡す
-                    PlantDetailDescription(plantDetailViewModel)
+            composeView.apply {
+                // デフォルトではComposeViewはデタッチされるとCompositionを破棄してしまうので
+                // fragmentではDisposeOnViewTreeLifecycleDestroyed戦略を使用してビューライフサイクルに従って状態を保存することが推奨されている
+                setViewCompositionStrategy(
+                    ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
+                )
+                setContent {
+                    MaterialTheme {
+                        // viewModelをコンポーザブルに渡す
+                        PlantDetailDescription(plantDetailViewModel)
+                    }
                 }
             }
         }
