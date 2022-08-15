@@ -12,11 +12,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.ContentAlpha
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -37,7 +48,6 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Android")
                 }
             }
         }
@@ -45,15 +55,77 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
+fun LayoutsCodelab() {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(text = "LayoutCodelab")
+                },
+                actions = {
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(Icons.Filled.Favorite, contentDescription = null)
+                    }
+                }
+            )
+        },
+        bottomBar = {
+            BottomNavigation {
+                BottomNavigationItem(
+                    icon = {
+                        Icon(Icons.Filled.Home, contentDescription = null)
+                    },
+                    label = {
+                        Text(text = "Home")
+                    },
+                    selected = true,
+                    onClick = { /*TODO*/ }
+                )
+                BottomNavigationItem(
+                    icon = {
+                        Icon(Icons.Filled.List, contentDescription = null)
+                    },
+                    label = {
+                        Text(text = "List")
+                    },
+                    selected = true,
+                    onClick = { /*TODO*/ }
+                )
+                BottomNavigationItem(
+                    icon = {
+                        Icon(Icons.Filled.Settings, contentDescription = null)
+                    },
+                    label = {
+                        Text(text = "Settings")
+                    },
+                    selected = true,
+                    onClick = { /*TODO*/ }
+                )
+            }
+        }
+    ) { innerPadding ->
+        BodyContent(
+            Modifier
+                .padding(innerPadding)
+                .padding(8.dp)
+        )
+    }
 }
 
-@Preview(showBackground = true)
+// コードを再利用しやすくテストしやすくするためにコードを小さなチャンクに構造化する
 @Composable
-fun DefaultPreview() {
+fun BodyContent(modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
+        Text(text = "Hi there!")
+        Text(text = "Thanks for going through the Layouts codelab")
+    }
+}
+
+@Preview
+@Composable
+fun LayoutsCodelabPreview() {
     LayoutsCodelabTheme {
-        Greeting("Android")
+        LayoutsCodelab()
     }
 }
 
