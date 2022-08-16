@@ -1,6 +1,7 @@
 package com.sanwaku2.layoutscodelab
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -40,9 +41,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.AlignmentLine
+import androidx.compose.ui.layout.FirstBaseline
+import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import com.sanwaku2.layoutscodelab.ui.theme.LayoutsCodelabTheme
@@ -120,10 +126,11 @@ fun LayoutsCodelab() {
 // コードを再利用しやすくテストしやすくするためにコードを小さなチャンクに構造化する
 @Composable
 fun BodyContent(modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
-        Text(text = "Hi there!")
-        Text(text = "Thanks for going through the Layouts codelab")
-        ScrollingList()
+    MyOwnColumn(modifier = modifier) {
+        Text("MyOwnColumn")
+        Text("places items")
+        Text("vertically.")
+        Text("We've done it by hand!")
     }
 }
 
@@ -227,3 +234,66 @@ fun ImageListItem(index: Int) {
     }
 }
 
+fun Modifier.firstBaselineToTop(
+    firstBaselineToTop: Dp
+) = this.then(
+    // layout修飾子で要素の配置を手動で制御できる
+    // measurable: 測定し配置する子
+    // constraints: 子の幅と高さの最小値と最大値
+    layout { measurable, constraints ->
+        val placeable = measurable.measure(constraints)
+
+        check(placeable[FirstBaseline] != AlignmentLine.Unspecified)
+        val firstBaseline = placeable[FirstBaseline]
+
+        val placeableY = firstBaselineToTop.roundToPx() - firstBaseline
+        val height = placeable.height + placeableY
+
+        Log.d("Modifier.firstBaselineToTop", "firstBaseLine=$firstBaseline firstBaselineToTop.roundToPx()=${firstBaselineToTop.roundToPx()} placeable.height=${placeable.height}")
+        layout(placeable.width, height){
+            placeable.placeRelative(0, placeableY)
+        }
+    }
+)
+
+@Preview
+@Composable
+fun TextWithPaddingToBaselinePreview() {
+    LayoutsCodelabTheme {
+        Text(text = "Hi there!", Modifier.firstBaselineToTop(32.dp))
+    }
+}
+
+@Preview
+@Composable
+fun TextWithNormalPaddingPreview() {
+    LayoutsCodelabTheme {
+        Text(text = "Hi there!", Modifier.padding(top = 32.dp))
+    }
+}
+
+@Composable
+fun MyOwnColumn(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    // Layoutコンポーザブルでコンポーザブルのグループに対して配置を制御できる
+    Layout(
+        modifier = modifier,
+        content = content
+    ) { measurables, constraints ->
+        val placeables = measurables.map { measurable ->
+            measurable.measure(constraints)
+        }
+
+        var yPosition = 0
+
+        layout(constraints.maxWidth, constraints.maxHeight) {
+            placeables.forEach { placeable ->
+                placeable.placeRelative(x = 0, y = yPosition)
+
+                yPosition += placeable.height
+            }
+        }
+    }
+}
