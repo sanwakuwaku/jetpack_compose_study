@@ -11,7 +11,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -46,7 +45,9 @@ fun WellnessTaskItem(
 }
 
 @Composable
-fun WellnessTaskItem(taskName: String, modifier: Modifier = Modifier) {
+fun WellnessTaskItem(
+    taskName: String, onClose: () -> Unit, modifier: Modifier = Modifier
+) {
     // LazyListではスクロールするとItemがコンポジションから出てしまうので
     // rememberを使うと状態が破棄される
     // rememberSaveableだと保持できる
@@ -56,7 +57,7 @@ fun WellnessTaskItem(taskName: String, modifier: Modifier = Modifier) {
         taskName = taskName,
         checked = checkedState,
         onCheckedChange = { newValue -> checkedState = newValue },
-        onClose = { /*TODO*/ },
+        onClose = onClose,
         modifier = modifier
     )
 }
