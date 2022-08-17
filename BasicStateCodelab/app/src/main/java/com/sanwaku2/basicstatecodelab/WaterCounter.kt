@@ -27,10 +27,14 @@ fun WaterCounter(modifier: Modifier = Modifier) {
         // デリゲートプロパティ (by) を使用して簡素化できる
         // valueプロパティを明示的に参照せずに間接的にcountを読み取ることができる
         var count by remember { mutableStateOf(0) }
-        Text(text = "You've had ${count} glasses.")
+
+        if (count > 0) {
+            Text(text = "You've had ${count} glasses.")
+        }
         Button(
             onClick = { count++ },
-            modifier = Modifier.padding(top = 8.dp)
+            modifier = Modifier.padding(top = 8.dp),
+            enabled = count < 10
         ) {
             Text(text = "Add one")
         }
