@@ -2,23 +2,25 @@ package com.sanwaku2.basicstatecodelab
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 
+// viewModel()は既存のViewModelを返すか指定されたスコープで新しく作成する。
+// viewModelインスタンスはスコープが存続している限り保持される。
 @Composable
-fun WellnessScreen(modifier: Modifier = Modifier) {
+fun WellnessScreen(
+    modifier: Modifier = Modifier,
+    wellnessViewModel: WellnessViewModel = viewModel()
+) {
     Column {
         StatefulCounter(modifier)
 
-        // ArrayListやmutableListOfは変更をComposeに通知しないのでリストの変更操作には使えない
-        // 監視可能なMutableListのインスタンスを作成するにはtoMutableStateList()を使用する
-        val list = remember { getWellnessTasks().toMutableStateList() }
         WellnessTaskList(
-            list = list,
-            onCloseTask = { task -> list.remove(task) }
+            list = wellnessViewModel.tasks,
+            onCheckedTask = { task, checked ->
+                wellnessViewModel.changeTaskChecked(task, checked)
+            },
+            onCloseTask = { task -> wellnessViewModel.remove(task) }
         )
     }
 }
-
-private fun getWellnessTasks() = List(30) { i -> WellnessTask(i, "Task # $i") }
